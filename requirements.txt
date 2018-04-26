@@ -1,0 +1,3 @@
+aiohttp
+pyaml
+aio_manager
