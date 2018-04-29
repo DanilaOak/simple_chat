@@ -14,7 +14,7 @@ class RunServer(BaseRunServer):
     def run(self, app, args):
         logging.basicConfig(level=args.level)
         logging.getLogger().setLevel(args.level)
-        web.run_app(app, host=args.hostname, port=args.port, access_log=None)
+        web.run_app(app, host=args.hostname, port=5004, access_log=None)
 
 
 manager.add_command(RunServer(app))

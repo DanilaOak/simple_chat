@@ -5,8 +5,9 @@ from collections import defaultdict
 
 from aiohttp import web, WSCloseCode
 
-from .utils import get_config
-from .routes import setup_routes
+from chat.utils import get_config
+from chat.routes import setup_routes
+from chat.middlewares import auth_middleware
 
 
 async def on_shutdown(app):
@@ -25,14 +26,13 @@ async def init_redis(app):
     app['redis'] = await aioredis.create_redis(('localhost', 6379), loop=app.loop)
 
 
-
 def create_app(config=None) -> web.Application:
 
     if not config:
         config = get_config()
 
     loop = asyncio.get_event_loop()
-    app = web.Application(loop=loop)
+    app = web.Application(loop=loop, middlewares=[auth_middleware])
     setup_routes(app)
     app['config'] = config
     app['chats'] = defaultdict(list)

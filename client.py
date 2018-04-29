@@ -4,9 +4,9 @@ import os
 import aiohttp
 
 HOST = os.getenv('HOST', 'localhost')
-PORT = int(os.getenv('PORT', 5000))
+PORT = int(os.getenv('PORT', 5004))
 
-URL = f'http://{HOST}:{PORT}/chat/wow'
+URL = f'http://{HOST}:{PORT}/chat/wow1'
 
 
 async def main():

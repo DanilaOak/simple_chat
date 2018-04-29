@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 from aiohttp import web, WSMsgType
 
@@ -12,6 +13,22 @@ async def hello(request: web.Request) -> web.Response:
 
 @routes.get('/chat/{channel}')
 async def websocket_handler(request: web.Request):
+    ws = web.WebSocketResponse()
+    await ws.prepare(request)
+    import ipdb; ipdb.set_trace()
+    token = request.cookies.get('AppCookie')
+
+    if not token:
+        await ws.close()
+        return web.HTTPForbidden(body=json.dumps({'error': 'Access denied for requested resource'}),
+                                 content_type='application/json')
+
+    user = request.app['redis'].get(token)
+
+    if not user:
+        await ws.close()
+        raise web.HTTPForbidden(body=json.dumps({'error': 'Access denied for requested resource'}),
+                                content_type='application/json')
 
     ws = web.WebSocketResponse()
     await ws.prepare(request)
