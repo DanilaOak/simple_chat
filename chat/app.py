@@ -9,6 +9,8 @@ from chat.utils import get_config
 from chat.routes import setup_routes
 from chat.middlewares import auth_middleware
 
+middlewares = [auth_middleware]
+
 
 async def on_shutdown(app):
     for ws in app['websockets']:
@@ -32,7 +34,7 @@ def create_app(config=None) -> web.Application:
         config = get_config()
 
     loop = asyncio.get_event_loop()
-    app = web.Application(loop=loop, middlewares=[auth_middleware])
+    app = web.Application(loop=loop, middlewares=middlewares)
     setup_routes(app)
     app['config'] = config
     app['chats'] = defaultdict(list)

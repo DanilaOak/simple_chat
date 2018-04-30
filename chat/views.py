@@ -15,32 +15,15 @@ async def hello(request: web.Request) -> web.Response:
 async def websocket_handler(request: web.Request):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
-    import ipdb; ipdb.set_trace()
-    token = request.cookies.get('AppCookie')
-
-    if not token:
-        await ws.close()
-        return web.HTTPForbidden(body=json.dumps({'error': 'Access denied for requested resource'}),
-                                 content_type='application/json')
-
-    user = request.app['redis'].get(token)
-
-    if not user:
-        await ws.close()
-        raise web.HTTPForbidden(body=json.dumps({'error': 'Access denied for requested resource'}),
-                                content_type='application/json')
-
-    ws = web.WebSocketResponse()
-    await ws.prepare(request)
     print('Create we WebSocket connection')
     channel = request.match_info.get('channel', 'main')
-
+    user = request.auth_user['login']
     request.app['chats'][channel].append(ws)
     redis = request.app['redis']
     messages = await redis.lrange(channel, 0, -1)
     if messages:
         for m in messages:
-            await ws.send_str(m.decode('utf-8') + '/MFK')
+            await ws.send_str(m.decode('utf-8'))
     try:
         async for msg in ws:
             if msg.type == WSMsgType.TEXT:
@@ -48,9 +31,9 @@ async def websocket_handler(request: web.Request):
                 if msg.data == 'close':
                     await ws.close()
                 else:
-                    await redis.rpush(channel, msg.data)
+                    await redis.rpush(channel, user + '--> ' + msg.data)
                     for w in request.app['chats'][channel]:
-                        await w.send_str(msg.data + '/MFK')
+                        await w.send_str(user + '--> ' + msg.data)
             elif msg.type == WSMsgType.ERROR:
                 print('ws connection closed with exception %s' %
                       ws.exception())

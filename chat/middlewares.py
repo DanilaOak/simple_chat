@@ -12,7 +12,7 @@ async def auth_middleware(request, handler):
         raise web.HTTPForbidden(body=json.dumps({'error': 'Access denied for requested resource'}),
                                 content_type='application/json')
 
-    user = request.app['redis'].get(token)
+    user = await request.app['redis'].get(token)
 
     if not user:
         raise web.HTTPForbidden(body=json.dumps({'error': 'Access denied for requested resource'}),
