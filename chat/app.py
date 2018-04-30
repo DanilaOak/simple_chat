@@ -4,10 +4,12 @@ import aioredis
 from collections import defaultdict
 
 from aiohttp import web, WSCloseCode
+from motor import motor_asyncio
 
 from chat.utils import get_config
 from chat.routes import setup_routes
 from chat.middlewares import auth_middleware
+from chat.models import DataBase
 
 middlewares = [auth_middleware]
 
@@ -38,6 +40,8 @@ def create_app(config=None) -> web.Application:
     setup_routes(app)
     app['config'] = config
     app['chats'] = defaultdict(list)
+    app.client = motor_asyncio.AsyncIOMotorClient(config['MONGO_HOST'])
+    app.db = DataBase(app.client[config['MONGO_DB_NAME']])
     app.on_startup.append(init_redis)
     app.on_shutdown.append(close_redis)
 
