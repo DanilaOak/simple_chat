@@ -1,5 +1,6 @@
 import asyncio
 import json
+from datetime import datetime
 
 from aiohttp import web, WSMsgType
 
@@ -32,6 +33,8 @@ async def websocket_handler(request: web.Request):
                     await ws.close()
                 else:
                     await redis.rpush(channel, user + '--> ' + msg.data)
+                    await request.app.db.message.save(chat_name=channel, user_name=user,
+                                                      message=msg.data, created=str(datetime.now()))
                     for w in request.app['chats'][channel]:
                         await w.send_str(user + '--> ' + msg.data)
             elif msg.type == WSMsgType.ERROR:

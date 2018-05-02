@@ -11,7 +11,7 @@ URL = f'http://{HOST}:{PORT}/chat/wow1'
 
 async def main():
     session = aiohttp.ClientSession(cookies={
-        'AppCookie': '70095f6c33c83812643b4d9392066dd263fe884bd86714e27cf1c798638a078d'})
+        'AppCookie': '728dc6a3a288fe2c32b7d241364c287cdab983b3f33c8c330fc959010011ac68'})
     async with session.ws_connect(URL) as ws:
         print('Start to consume')
         async for msg in ws:

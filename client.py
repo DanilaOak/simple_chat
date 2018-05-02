@@ -11,7 +11,7 @@ URL = f'http://{HOST}:{PORT}/chat/wow1'
 
 async def main():
     session = aiohttp.ClientSession(cookies={
-        'AppCookie': '70095f6c33c83812643b4d9392066dd263fe884bd86714e27cf1c798638a078d'})
+        'AppCookie': 'f989736a44a4d91d84822fbf0f67984a766596fd057281a0964aed6214788af5'})
     async with session.ws_connect(URL) as ws:
 
         await prompt_and_send(ws)

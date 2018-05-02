@@ -15,7 +15,7 @@ def get_config():
     log = logging.getLogger()
     config = {}
     try:
-        config = load_config(os.path.join(os.path.dirname(os.path.realpath(__file__)), './config.yaml'))
+        config = load_config(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../config.yaml'))
     except FileNotFoundError:
         pass
     except yaml.YAMLError:

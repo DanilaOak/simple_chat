@@ -7,10 +7,9 @@ class Message:
     def __init__(self, collection, **kwargs):
         self.collection = collection
 
-    async def save(self, message_id, chat_id, user_id, created, message, **kwargs):
+    async def save(self, chat_name, user_name, created: str, message, **kwargs):
         result = await self.collection.insert(
-            {'message_id': message_id, 'chat_id': chat_id,
-             'user_id': user_id, 'created': created, 'message': message})
+            {'chat_name': chat_name, 'user_name': user_name, 'created': created, 'message': message})
         return result
 
     async def get_messages(self):
@@ -31,6 +30,11 @@ class Chat:
 
     def __init__(self, collection, **kwargs):
         self.collection = collection
+
+    async def save(self, chat_name, user_name, created: str, message, **kwargs):
+        result = await self.collection.insert(
+            {'chat_name': chat_name, 'created': created, 'messages': []})
+        return result
 
 
 class DataBase:
